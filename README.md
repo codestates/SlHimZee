@@ -1,1 +1,1 @@
-Menmonic Wallet
+Mnemonic Wallet
