@@ -5,13 +5,9 @@ const fs = require("fs");
 
 // get random Mnemonic code
 router.post("/newMnemonic", async (req, res) => {
-    try {
-        const mnemonic = lightwallet.keystore.generateRandomSeed();
-        console.log(mnemonic);
-        res.send(mnemonic);
-    } catch (err) {
-        console.log(err);
-    }
+    const mnemonic = lightwallet.keystore.generateRandomSeed();
+    console.log(mnemonic);
+    res.send(mnemonic);
 });
 
 // generate keystore and address
