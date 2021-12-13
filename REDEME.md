@@ -1,1 +1,1 @@
-Menmonic Wallet :)
+Menmonic Wallet
