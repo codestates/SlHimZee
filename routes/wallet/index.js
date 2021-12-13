@@ -1,53 +1,53 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 const lightwallet = require("eth-lightwallet");
-const fs = require('fs');
+const fs = require("fs");
 
-// TODO : lightwallet 모듈을 사용하여 랜덤한 니모닉 코드를 얻습니다.
-router.post('/newMnemonic', async(req,res) => {
-		let mnemonic;
-		try{
-		mnemonic = lightwallet.keystore.generateRandomSeed();
-		res.json({mnemonic});
-		}
-		catch(err){
-		console.log(err);
-		}
-
+// get random Mnemonic code
+router.post("/newMnemonic", async (req, res) => {
+    try {
+        const mnemonic = lightwallet.keystore.generateRandomSeed();
+        console.log(mnemonic);
+        res.send(mnemonic);
+    } catch (err) {
+        console.log(err);
+    }
 });
 
+// generate keystore and address
+router.post("/newWallet", async (req, res) => {
+    const password = req.body.password;
+    const mnemonic = req.body.mnemonic;
 
-// TODO : 니모닉 코드와 패스워드를 이용해 keystore와 address를 생성합니다.
-router.post('/newWallet', async(req, res) => {
-	let password = req.body.password
-    let mnemonic = req.body.mnemonic;
-
-    try {
-      lightwallet.keystore.createVault(
+    lightwallet.keystore.createVault(
         {
-          password: password,
-          seedPhrase: mnemonic,
-          hdPathString: "m/0'/0'/0'"
+            password: password,
+            seedPhrase: mnemonic,
+            hdPathString: "m/0'/0'/0'",
         },
         function (err, ks) {
-          ks.keyFromPassword(password, function (err, pwDerivedKey) {
-            ks.generateNewAddress(pwDerivedKey, 1);
+            if (err) throw err;
+            ks.keyFromPassword(password, function (err, pwDerivedKey) {
+                if (err) throw err;
+                ks.generateNewAddress(pwDerivedKey, 1);
+                const addr = ks.getAddresses();
+                const keystore = ks.serialize();
 
-            let address = (ks.getAddresses()).toString();
-            let keystore = ks.serialize();
+                console.log(addr);
+                console.log(keystore);
 
-//            res.json({ keystore: keystore, address: address });
-
-			fs.writeFile('wallet.json', keystore, function(err, data){
-					if(err){res.json({code: 999, message: "실패"})}
-					else{res.json({code: 1, message: "성공"})}
-					});
-          });
+                fs.writeFile("wallet.json", keystore, function (err, result) {
+                    if (err) {
+                        res.send({ message: "Fault" });
+                    } else {
+                        res.send({
+                            message: "Success. Check your 'wallet.json'",
+                        });
+                    }
+                });
+            });
         }
-      );
-    } catch (exception) {
-      console.log("NewWallet ==>>>> " + exception);
-    }
+    );
 });
 
 module.exports = router;
