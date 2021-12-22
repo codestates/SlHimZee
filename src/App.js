@@ -3,6 +3,7 @@ import Content from './component/Content';
 import Header from './component/Header';
 import Navigator from './component/Navigator';
 import Paperbase from './component/Paperbase';
+import Mui from './component/Mui'
 
 function App() {
   return (
