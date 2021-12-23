@@ -8,11 +8,18 @@ import CS from './components/CS';
 import CA from './components/CA';
 import TD from './components/TD';
 import Main from './components/Main';
-import Signinfrom from './components/signinfrom';
+// import Signinfrom from './components/signinfrom';
 import Mui from './components/Mui'
 
+import LandingPage from './components/LandingPage/LandingPage'
+import LoginPage from './components/Loginpage/Loginpage';
+import RegisterPage from './components/RegisterPage/RegisterPage';
+import Auth from './components/hoc/auth'
+
+
+
 const App = (props) => {
-  
+
 
   return (
     <BrowserRouter>
@@ -39,6 +46,9 @@ const App = (props) => {
             <Route path="/signinfrom">
               <Mui />
             </Route>
+            {/* <Route exact path="/" component={Auth(LandingPage, null)} />
+            <Route exact path="/login" component={Auth(LoginPage, false)} />
+            <Route exact path="/register" component={Auth(RegisterPage, false)} /> */}
           </Switch>
         </main>
       </div>

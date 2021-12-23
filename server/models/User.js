@@ -17,6 +17,9 @@ const userSchema = mongoose.Schema({
         type: String,
         minlength: 5
     },
+    address: {
+        type: String
+    },
     lastname: {
         type: String,
         maxlength: 50
@@ -31,6 +34,9 @@ const userSchema = mongoose.Schema({
     },
     tokenExp: {
         type: Number
+    },
+    keyStore: {
+        type: String
     }
 })
 

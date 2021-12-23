@@ -20,6 +20,8 @@ mongoose.connect(config.mongoURI
 ).then(() => console.log('MD'))
 .catch(err => console.log(err))
 
+const walletRouter = require('./routes/wallet/index');
+app.use('/wallet', walletRouter);
 
 app.post('/api/users/register', (req, res) => {
 
