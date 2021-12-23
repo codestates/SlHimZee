@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import logo from './한강.png';
+// import logo from './한강.png';
 import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, NavDropdown, Button, Container, Offcanvas, Form, FormControl } from 'react-bootstrap';
 import ham from './ham.png';

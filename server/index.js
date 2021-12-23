@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const config = require('./config/key');
 const { auth } = require('./middleware/auth');
 const { User } = require("./models/User");
+const lightwallet = require("eth-lightwallet");
 
 //application/x-www-form-urlencoded, 분석
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,16 +29,61 @@ app.post('/api/users/register', (req, res) => {
     //회원 가입 할떄 필요한 정보들을  client에서 가져오면 
     //그것들을  데이터 베이스에 넣어준다. 
     const user = new User(req.body)
-  
 
-    user.save((err, userInfo) => {
-      if (err) return res.json({ success: false, err })
-      return res.status(200).json({
-        success: true
-      })
-    })
+
+    let email, reqPassword;
+    email = req.body.email;
+    reqPassword = req.body.password;
+    try {
+        let mnemonic;
+        let address;
+        let keyStore;
+        mnemonic = lightwallet.keystore.generateRandomSeed();
+        // 생성된 니모닉코드와 password로 keyStore, address 생성
+        lightwallet.keystore.createVault({
+            password: reqPassword,
+            seedPhrase: mnemonic,
+            hdPathString: "m/0'/0'/0'"
+        },
+            function (err, ks) {
+                ks.keyFromPassword(reqPassword, function (err, pwDerivedKey) {
+                    ks.generateNewAddress(pwDerivedKey, 1);
+
+                    address = (ks.getAddresses()).toString();
+                    keyStore = ks.serialize();
+
+                    const user = new User();
+                    user.email = email;
+                    user.password = reqPassword;
+                    user.address = address;
+                    user.keyStore = keyStore;
+                    // res.json(user); 
+                    user.save(function (err) {
+                        if (err) {
+                            console.error(err);
+                            res.json({ message: '생성 실패' });
+                            return;
+                        }
+                        res.json({ message: "생성 완료!", email: email, mnemonic: mnemonic, keyStore: keyStore, address: address });
+                    });
+                })
+            });
+
+    } catch (err) {
+        console.log(err);
+    }
+
+
+    // user.save((err, userInfo) => {
+    //   if (err) return res.json({ success: false, err })
+    //   return res.status(200).json({
+    //     success: true
+    //   })
+    // })
   })
 
+
+  //로그인
   app.post('/api/users/login', (req, res) => {
 
     // console.log('ping')
@@ -66,7 +112,7 @@ app.post('/api/users/register', (req, res) => {
           // 토큰을 저장한다.  어디에 ?  쿠키 , 로컳스토리지 
           res.cookie("x_auth", user.token)
             .status(200)
-            .json({ loginSuccess: true, userId: user._id })
+            .json({ loginSuccess: true, userId: user._id, address: user.address })
         })
       })
     })

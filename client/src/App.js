@@ -43,12 +43,15 @@ const App = (props) => {
             <Route path="/TD">
               <TD />
             </Route>
-            <Route path="/signinfrom">
+            {/* <Route path="/signinfrom">
               <Mui />
-            </Route>
-            {/* <Route exact path="/" component={Auth(LandingPage, null)} />
+            </Route> */}
+            {/* <Route path="/Loignpage">
+              <Loginpage />
+            </Route> */}
+            <Route exact path="/" component={Auth(LandingPage, null)} />
             <Route exact path="/login" component={Auth(LoginPage, false)} />
-            <Route exact path="/register" component={Auth(RegisterPage, false)} /> */}
+            <Route exact path="/register" component={Auth(RegisterPage, false)} />
           </Switch>
         </main>
       </div>
