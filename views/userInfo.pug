@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1 UserInfo
+  if user
+    h2 계정이 존재하네요!
+    p userName: #{user.userName}
+    p address: #{user.address}
+  else
+    h2 계정이 존재하지 않아요 :(

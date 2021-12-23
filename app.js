@@ -1,16 +1,34 @@
 var createError = require('http-errors');
 var express = require('express');
+const mongoose = require('mongoose');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
+var bodyParser = require('body-parser');
+var port = process.env.PORT || 3000;
+var app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const walletRouter = require('./routes/wallet/index');
 
-var app = express();
-const port = 3001;
+
+// DB setting
+
+
+const uri = "mongodb+srv://BEB01_project2:hello123@cluster0.g5xbs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log("MongoDB Connected success !!"))
+  .catch(err => console.log(err))
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
