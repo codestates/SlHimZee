@@ -56,12 +56,14 @@ app.post('/api/users/register', (req, res) => {
 
     //회원 가입 할떄 필요한 정보들을  client에서 가져오면 
     //그것들을  데이터 베이스에 넣어준다. 
+  console.log("ff");
     const user = new User(req.body)
 
 
     const reqEmail = req.body.email;
     const reqPassword = req.body.password;
     const reqName = req.body.name;
+    const role = req.body.role || 0;
     try {
         let mnemonic;
         let address;
@@ -86,14 +88,15 @@ app.post('/api/users/register', (req, res) => {
                     user.password = reqPassword;
                     user.address = address;
                     user.keyStore = keyStore;
+                    user.role = role;
                     // res.json(user); 
                     user.save(function (err) {
                         if (err) {
                             console.error(err);
-                            res.json({ message: '생성 실패' });
+                            res.json({ success: false, message: '생성 실패' });
                             return;
                         }
-                        res.json({ message: "생성 완료!", email: reqEmail, mnemonic: mnemonic, keyStore: keyStore, address: address });
+                        res.json({ success: true, message: "생성 완료!", email: reqEmail, mnemonic: mnemonic, keyStore: keyStore, address: address });
                     });
                 })
             });

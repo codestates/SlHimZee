@@ -11,6 +11,7 @@ import axios from 'axios';
 const Bar = ({isLogin}) => {
     const [show, setShow] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -20,10 +21,8 @@ const Bar = ({isLogin}) => {
     dispatch(auth())
         .then((res) => {
             console.log(res.payload);
-            if (res.payload.isAuth) {
-                console.log("login check");
-                setIsAuth(true);
-            }
+            setIsAuth(res.payload.isAuth);
+            setIsAdmin(res.payload.isAdmin);
         })
 
     const handleLogout = () => {
@@ -117,9 +116,10 @@ const Bar = ({isLogin}) => {
                     </Nav>
                     <Nav>
                         <div className="mb-2">
-                            <Button variant="dark" href="/product/upload" size="md" className="me-1">
-                                Upload
-                            </Button>
+                            {isAdmin ?
+                                <Button variant="dark" href="/product/upload" size="md" className="me-1">
+                                    Upload
+                                </Button> : ""}
 
                             <Button variant="dark" href={isAuth ? "" : "/login"} size="md" className="me-1" onClick={() => {
                                 if (isAuth) {

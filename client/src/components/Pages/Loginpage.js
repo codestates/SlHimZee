@@ -57,7 +57,7 @@ function LoginPage(props) {
     const handleClose = () => {
         setOpen(false);
         if (login) {
-            window.location.replace("/main")
+            window.location.replace("/")
         }
     };
 
