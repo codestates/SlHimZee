@@ -12,7 +12,7 @@ import TD from './components/Pages/TD';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import LandingPage from './components/Pages/LandingPage/LandingPage'
-import LoginPage from './components/Pages/LandingPage/LandingPage';
+import LoginPage from './components/Pages/Loginpage/Loginpage';
 import RegisterPage from './components/Pages/RegisterPage/RegisterPage';
 import Auth from './components/hoc/auth'
 import UploadProductPage from './components/UploadProductPage/UploadProductPage';

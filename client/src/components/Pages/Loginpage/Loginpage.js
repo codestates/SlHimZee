@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import logo from '../../img/리뷰존.png';
+import logo from '../../../img/리뷰존.png';
 
 import { useDispatch } from 'react-redux';
 import { loginUser, auth } from '../../actions/user_action';
