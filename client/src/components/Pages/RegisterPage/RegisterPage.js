@@ -1,23 +1,23 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../actions/user_action';
-import Axios from 'axios';
+// import { registerUser } from '../../actions/user_action';
+// import Axios from 'axios';
 
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
+// import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Checkbox from '@mui/material/Checkbox';
+// import Link from '@mui/material/Link';
+// import Grid from '@mui/material/Grid';
 import Modal from '@mui/material/Modal';   
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+// import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { withRouter } from 'react-router-dom';
-import logo from '../../img/리뷰존.png';
+import logo from '../../../img/리뷰존.png';
 
 const theme = createTheme();
 

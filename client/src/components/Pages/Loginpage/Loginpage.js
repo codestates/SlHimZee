@@ -14,7 +14,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import logo from '../../img/리뷰존.png';
 
 import { useDispatch } from 'react-redux';
-import { loginUser, auth } from '../actions/user_action';
+import { loginUser, auth } from '../../actions/user_action';
 import { withRouter } from 'react-router-dom';
 
 const style = {

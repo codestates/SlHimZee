@@ -11,11 +11,12 @@ const cors = require('cors');
 
 app.use(
   cors({
-    origin: ['http://localhost:3000/'],
+    origin: ['http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'OPTIONS']
   })
 );
+
 // const uri = "mongodb+srv://BEB01_project2:hello123@cluster0.g5xbs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
 //minjeong DB

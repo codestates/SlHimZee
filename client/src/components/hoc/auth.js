@@ -10,7 +10,7 @@ export default function (SpecificComponent, option, adminRoute = null) {
     //false   =>  로그인한 유저는 출입 불가능한 페이지
     function AuthenticationCheck(props) {
 
-        // let user = useSelector(state => state.user);
+        let user = useSelector(state => state.user);
         const dispatch = useDispatch();
 
         useEffect(() => {
@@ -35,8 +35,8 @@ export default function (SpecificComponent, option, adminRoute = null) {
         }, [])
 
         return (
-            // <SpecificComponent {...props} user={user}  />
-            <SpecificComponent />
+            <SpecificComponent {...props} user={user}  />
+            // <SpecificComponent />
         )
     }
     return AuthenticationCheck
