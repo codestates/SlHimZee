@@ -11,14 +11,16 @@ function DetailProductPage(props) {
     const [Product, setProduct] = useState({})
 
     useEffect(() => {
-        axios.get(`http://locallhost:4000/api/product/products_by_id?id=${productId}&type=single`)
+        axios.get(`/api/product/products_by_id?id=${productId}&type=single`)
             .then(response => {
-                if (response.data.success) {
-                    console.log('response.data', response.data)
-                    setProduct(response.data[0])
-                } 
+
+                console.log('response.data', response.data)
+                console.log('want', response.data[0])
+                setProduct(response.data[0])
+                console.log('setProduct', setProduct)
             })
             .catch(err => alert(err))
+
     }, [])
 
 
@@ -33,7 +35,7 @@ function DetailProductPage(props) {
             <br />
 
             <Row gutter={[16, 16]} >
-                <Col lg={12} sm={24}>
+                <Col lg={9} sm={20}>
                     {/* ProductImage */}
                     <ProductImage detail={Product} />
                 </Col>
@@ -41,7 +43,7 @@ function DetailProductPage(props) {
                     {/* ProductInfo */}
                     <ProductInfo detail={Product} />
                 </Col>
-            </Row>
+             </Row>
 
 
 

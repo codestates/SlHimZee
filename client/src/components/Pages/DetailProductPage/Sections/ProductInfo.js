@@ -25,8 +25,11 @@ function ProductInfo(props) {
             <br />
             <br />
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Button size="large" shape="round" type="danger" onClick>
+                <Button size="large" shape="round" type="danger">
                     Add to Cart
+                </Button>
+                <Button herf={'/reviewpage'}size="large" shape="round" type="danger">
+                    Review Pages
                 </Button>
             </div>
 
