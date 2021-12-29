@@ -8,6 +8,8 @@ const { auth } = require('./middleware/auth');
 const { User } = require("./models/User");
 const lightwallet = require("eth-lightwallet");
 const cors = require('cors');
+const Web3 = require('web3');
+const async = require('async');
 
 // app.use(cors())
 //application/x-www-form-urlencoded, 분석
@@ -51,12 +53,79 @@ mongoose.connect(uri, {
 app.use('/api/product', require('./routes/product'));
 app.use('/uploads', express.static('uploads'));
 
+// user의 id와 비밀번호 입력 시, 1ETH 제공
+app.post('/ethFaucet', async(req, res) => {
+  const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:7545'));
+  const accounts = await web3.eth.getAccounts();
+  let balance, txHash;
+  console.log(web3);
+  console.log(accounts);
+
+  User.findOne({ email: req.body.email }, (err, user) => {
+
+    console.log('user', user)
+    if (!user) {
+      return res.json({
+        loginSuccess: false,
+        message: "제공된 이메일에 해당하는 유저가 없습니다."
+      })
+    }
+
+    //요청된 이메일이 데이터 베이스에 있다면 비밀번호가 맞는 비밀번호 인지 확인.
+    user.comparePassword(req.body.password, (err, isMatch) => {
+      // console.log('err',err)
+      // console.log('isMatch',isMatch)
+      if (!isMatch)
+        return res.json({ loginSuccess: false, message: "비밀번호가 틀렸습니다." })
+
+      //비밀번호 일치한다면 1ETH 전송
+      User.findOne({ role: 1 }, (err, server) => {
+        if (!server) {
+          return res.json({
+            faucetSuccess: false,
+            message: "Error: Faucet Transaction Faield"
+          })
+        }
+        console.log('server', server.privateKey);
+        // 개인 키 등록
+        web3.eth.accounts.privateKeyToAccount(server.privateKey);
+        console.log('개인 키 등록 완료');
+
+        //트랜잭션 서명
+        web3.eth.accounts.signTransaction({
+          to: user.address,
+          value: 1000000000000000000, // 1ETH
+          gas: 21000
+        }, server.privateKey, (err, result) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          console.log(result);
+          txHash = result.transactionHash;
+          web3.eth.sendSignedTransaction(result.rawTransaction).on('receipt', console.log);
+          web3.eth.getBalance(user.address, "latest", function (err, result) {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            console.log(result);
+            balance = result;
+            return res.json({ message: "Faucet Successed", data: { username: user.name, address: user.address, balance: balance, txHash: txHash } });
+          }); 
+        });
+     }) 
+    })
+  })
+ 
+  
+
+})
 
 app.post('/api/users/register', (req, res) => {
 
-    //회원 가입 할떄 필요한 정보들을  client에서 가져오면 
+    //회원 가입 할 때 필요한 정보들을  client에서 가져오면 
     //그것들을  데이터 베이스에 넣어준다. 
-  console.log("ff");
     const user = new User(req.body)
 
 
@@ -64,6 +133,7 @@ app.post('/api/users/register', (req, res) => {
     const reqPassword = req.body.password;
     const reqName = req.body.name;
     const role = req.body.role || 0;
+
     try {
         let mnemonic;
         let address;
@@ -89,6 +159,9 @@ app.post('/api/users/register', (req, res) => {
                     user.address = address;
                     user.keyStore = keyStore;
                     user.role = role;
+                  if (role == 1) { //admin
+                    user.privateKey = req.body.privateKey;
+                    }
                     // res.json(user); 
                     user.save(function (err) {
                         if (err) {
