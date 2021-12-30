@@ -46,8 +46,10 @@ mongoose.connect(config.mongoURI
 .catch(err => console.log(err))
 
 app.use('/api/product', require('./routes/product'));
+
 app.use('/uploads', express.static('uploads'));
 
+app.use("/api/comment", require("./routes/comment"));
 
 app.post('/api/users/register', (req, res) => {
 
