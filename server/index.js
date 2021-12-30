@@ -151,7 +151,7 @@ app.post("/serveToken", async(req, res) => {
       const contract = new web3.eth.Contract(erc20Abi, contractAddress);
       console.log('contract object 생성');
 
-      const data = contract.methods.transfer(server.address, 1).encodeABI(); //Create the data for token transaction.
+      const data = contract.methods.transfer(user.address, 1).encodeABI(); //Create the data for token transaction.
 
       const rawTransaction = { "to": contractAddress, "gas": 100000, "data": data }; 
 
