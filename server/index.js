@@ -10,6 +10,9 @@ const lightwallet = require("eth-lightwallet");
 const cors = require('cors');
 const Web3 = require('web3');
 const async = require('async');
+const erc20Abi = require('./erc20/erc20Abi')
+const erc20Bytecode = require('./erc20/erc20Bytecode');
+const contractAddress = require('./erc20/contractAddress');
 
 // app.use(cors())
 //application/x-www-form-urlencoded, 분석
@@ -38,11 +41,6 @@ mongoose.connect(uri, {
 }).then(() => console.log("MongoDB Connected success !!"))
   .catch(err => console.log(err))
 //minjeong DB
-
-// GW DB
-
-
-
 
 //gw db
 // const mongoose = require('mongoose')
@@ -117,9 +115,65 @@ app.post('/ethFaucet', async(req, res) => {
      }) 
     })
   })
- 
-  
+})
 
+
+// ERC20 토큰 제공
+// API 명세에는 userName으로 되어 있으나, 중복 이슈가 있을 수 있으므로 eamil로 변경
+app.post("/serveToken", async(req, res) => {
+
+  const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:7545'));
+  const accounts = await web3.eth.getAccounts();
+  let address, txHash, balance;
+
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (!user) {
+      res.json({ message: 'Error: sendSignedTransaction Failed' })
+    }
+    address = user.address;
+
+    // 토큰 제공을 위한 서버 계정
+    User.findOne({ role: 1 }, (err, server) => {
+      if (!server) {
+        return res.json({
+          faucetSuccess: false,
+          message: "Error: Faucet Transaction Faield"
+        })
+      }
+      console.log('server', server.privateKey);
+
+      // 개인 키 등록
+      web3.eth.accounts.privateKeyToAccount(server.privateKey);
+      console.log('개인 키 등록 완료');
+
+
+      // Contract Object 생성
+      const contract = new web3.eth.Contract(erc20Abi, contractAddress);
+      console.log('contract object 생성');
+
+      const data = contract.methods.transfer(server.address, 1).encodeABI(); //Create the data for token transaction.
+
+      const rawTransaction = { "to": contractAddress, "gas": 100000, "data": data }; 
+
+      console.log("debug");
+      web3.eth.accounts.signTransaction(rawTransaction, server.privateKey, (err, result) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        txHash = result.transactionHash;
+        console.log(txHash);
+        web3.eth.sendSignedTransaction (result.rawTransaction, async(err, result) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          balance = await contract.methods.balanceOf(user.address).call();
+          res.json({message: "Serving Successed", data: {name: user.name, address: user.address, txHash: txHash, tokenBalance: balance}})
+        })
+      })
+    })
+  })  
 })
 
 app.post('/api/users/register', (req, res) => {
