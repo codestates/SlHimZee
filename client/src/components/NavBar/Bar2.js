@@ -5,11 +5,12 @@ import { Navbar, Nav, NavDropdown, Button, Container, Offcanvas, Form, FormContr
 import ham from '../../img/ham.png';
 import { useDispatch } from 'react-redux';
 import { auth, logoutUser } from '../actions/user_action';
-
+import axios from 'axios';
 
 const Bar = ({isLogin}) => {
     const [show, setShow] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -22,11 +23,22 @@ const Bar = ({isLogin}) => {
             if (res.payload.isAuth) {
                 console.log("login check");
                 setIsAuth(true);
+                setIsAdmin(res.payload.isAdmin);
             }
         })
 
     const handleLogout = () => {
         console.log("logoout");
+        axios.get(`http://localhost:4000/api/users/logout`, { withCredentials: true })
+        .then(response => {
+            if (response.data.success) {
+                console.log('로그아웃 성공')
+                setIsAuth(false);
+            } else {
+                console.log('로그아웃 실패')
+                alert('로그아웃 하는데 실패 했습니다.')
+            }
+        })
     }
 
     return (
@@ -106,10 +118,10 @@ const Bar = ({isLogin}) => {
                     </Nav>
                     <Nav>
                         <div className="mb-2">
-                            
-                            <Button variant="dark" href="/product/upload" size="md" className="me-1">
-                                Upload
-                            </Button>
+                        {isAdmin ?
+                                <Button variant="dark" href="/product/upload" size="md" className="me-1">
+                                    Upload
+                                </Button> : ""}
 
                             <Button variant="dark" href={isAuth ? "" : "/login"} size="md" className="me-1" onClick={() => {
                                 if (isAuth) {
@@ -119,6 +131,9 @@ const Bar = ({isLogin}) => {
                                 {isAuth? "Sign Out" : "Sign In"}
                             </Button>
                             <Button variant="dark" href="/register" size="md">
+                                {isAuth? "Sign Out" : "Sign Up"}
+                            </Button>
+                            <Button variant="dark" href={isAuth ? "/myPage" : "/register"} size="md">
                                 {isAuth? "My Page" : "Sign Up"}
                             </Button>
 

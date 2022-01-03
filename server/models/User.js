@@ -37,6 +37,9 @@ const userSchema = mongoose.Schema({
     },
     keyStore: {
         type: String
+    },
+    privateKey: {
+        type: String
     }
 })
 

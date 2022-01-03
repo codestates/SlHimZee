@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
-// import { registerUser } from '../../actions/user_action';
-// import Axios from 'axios';
+import { registerUser } from '../../actions/user_action'
+import Axios from 'axios';
 
 import Button from '@mui/material/Button';
-// import CssBaseline from '@mui/material/CssBaseline';
+import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Checkbox from '@mui/material/Checkbox';
-// import Link from '@mui/material/Link';
-// import Grid from '@mui/material/Grid';
-import Modal from '@mui/material/Modal';   
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-// import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -37,37 +37,44 @@ const style = {
 function RegisterPage(props) {
     const dispatch = useDispatch();
 
-    const [Email, setEmail] = useState("");
+    const [email, setEmail] = useState("");
     const [Name, setName] = useState("");
-    const [Password, setPassword] = useState("");
-    const [ConfirmPassword, setConfirmPassword] = useState("");
-    const [open, setOpen] = useState(false);
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState(false);
+    const [success, setSuccess] = useState(false);
 
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
+    const handleClose = () => {
+        setSuccess(false);
+        setError(false);
+        if (success) {
+            props.history.push("/login");
+        }
+    };
 
 
     const onSubmitHandler = (event) => {
         event.preventDefault();
 
-        if (Password !== ConfirmPassword) {
-            setOpen(true);
+        if (password !== confirmPassword) {
+            setError(true);
         }
 
         let body = {
-            email: Email,
-            password: Password,
+            email: email,
+            password: password,
             name: Name
         }
-        // dispatch(registerUser(body))
-        //     .then(response => {
-        //         if (response.payload.success) {
-        //             props.history.push("/login")
-        //         } else {
-        //             alert("Failed to sign up")
-        //         }
-        //     })
+        console.log(body);
+        dispatch(registerUser(body))
+            .then(response => {
+                if (response.payload.success) {
+                    setSuccess(true);
+                }
+                else {
+                    setError(true);
+                }
+            })
     }
 
 
@@ -99,7 +106,7 @@ function RegisterPage(props) {
         //     </form>
         // </div>
 
-         <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
                 <Box
                     sx={{
@@ -179,23 +186,40 @@ function RegisterPage(props) {
                         </Button>
                     </Box>
                 </Box>
-                {/* Modal */}
+                {/* 비밀번호 오류 Modal */}
                 <Modal
-                    open={open}
+                    open={error}
                     onClose={handleClose}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
                     <Box sx={style}>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
-                            ❌ 비밀번호 오류 ❌ 
+                            ❌ 회원가입 오류 ❌
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            '비밀번호'와 '비밀번호 확인'이 달라요
+                            정보를 다시 확인해 주세요
                         </Typography>
                     </Box>
                 </Modal>
-                {/* Modal */}
+                {/* 비밀번호 오류 Modal */}
+                {/* 회원가입 성공 Modal */}
+                <Modal
+                    open={success}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            ✅ 회원가입 성공!
+                        </Typography>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            🦊 지금 바로 로그인해 보세요! 🦊
+                        </Typography>
+                    </Box>
+                </Modal>
+                {/* 회원가입 성공 Modal */}
             </Container>
         </ThemeProvider>
 
