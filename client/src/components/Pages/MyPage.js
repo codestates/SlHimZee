@@ -1,27 +1,12 @@
 import React, { useState} from 'react';
 import { Box, ThemeProvider, createTheme } from '@mui/system';
-import { Container } from '@mui/material';
+import Container from '@mui/material/Container';
+import Button from '@mui/material/Button'; 
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';                            
+import Grid from '@mui/material/Grid';
 import { useDispatch } from 'react-redux';
-import { auth, logoutUser } from '../actions/user_action';
-import axios from 'axios';
+import { auth} from '../actions/user_action';
 
-const theme = createTheme({
-    palette: {
-        background: {
-            paper: '#fff',
-        },
-        text: {
-            primary: '#173A5E',
-            secondary: '#46505A',
-        },
-        action: {
-            active: '#001E3C',
-        },
-        success: {
-            dark: '#009688',
-        },
-    },
-});
 
 export default function MyPage() {
 
@@ -44,7 +29,6 @@ export default function MyPage() {
 
     return (
         <Container component="main" maxWidth="xs">
-        <ThemeProvider theme={theme}>
             <Box
                 sx={{
                     marginTop: 10,
@@ -115,12 +99,20 @@ export default function MyPage() {
                         minWidth: 300,
                     }}
                 >
-                    <Box sx={{ color: 'text.secondary' }}>Eth Balance</Box>
-                    <Box sx={{ color: 'text.primary', fontSize: 20, fontWeight: 'medium' }}>
-                        {ethBalance/1000000000000000000} ETH
-                    </Box>
+                <Box sx={{ color: 'text.secondary' }}>Eth Balance</Box>
+                    <Grid container spacing={2}>
+                        <Grid item xs={7}>
+                            <Box sx={{ color: 'text.primary', fontSize: 20, fontWeight: 'medium' }}>
+                                {ethBalance/1000000000000000000} ETH
+                            </Box>
+                        </Grid>
+                        <Grid item xs={5}>
+                            <Button variant="contained" startIcon={<AttachMoneyIcon />}>
+                                Get 1eth
+                            </Button>
+                        </Grid>
+                    </Grid> 
                 </Box>
-            </ThemeProvider>
         </Container>
     );
 }
