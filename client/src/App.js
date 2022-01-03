@@ -14,7 +14,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import LandingPage from './components/Pages/LandingPage'
 import LoginPage from './components/Pages/Loginpage';
 import RegisterPage from './components/Pages/RegisterPage';
-import Auth from './components/hoc/auth'
+import MyPage from './components/Pages/MyPage';
+import Auth from './components/hoc/auth';
 import UploadProductPage from './components/UploadProductPage/UploadProductPage';
 
 
@@ -72,6 +73,7 @@ const App = (props) => {
           <Route exact path="/" component={Auth(LandingPage, null)} />
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
+          <Route exact path="/myPage" component={Auth(MyPage, true)} />
           <Route exact path="/product/upload" component={Auth(UploadProductPage, true)} />
         </Switch>
       </div>

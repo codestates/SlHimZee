@@ -128,7 +128,7 @@ const Bar = ({isLogin}) => {
                             }}>
                                 {isAuth? "Sign Out" : "Sign In"}
                             </Button>
-                            <Button variant="dark" href="/register" size="md">
+                            <Button variant="dark" href={isAuth ? "/myPage" : "/register"} size="md">
                                 {isAuth? "My Page" : "Sign Up"}
                             </Button>
 

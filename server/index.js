@@ -155,7 +155,6 @@ app.post("/serveToken", async(req, res) => {
 
       const rawTransaction = { "to": contractAddress, "gas": 100000, "data": data }; 
 
-      console.log("debug");
       web3.eth.accounts.signTransaction(rawTransaction, server.privateKey, (err, result) => {
         if (err) {
           console.log(err);
@@ -271,17 +270,34 @@ app.post('/api/users/register', (req, res) => {
 
   // role 1 어드민    role 2 특정 부서 어드민 
 // role 0 -> 일반유저   role 0이 아니면  관리자 
-app.get('/api/users/auth', auth, (req, res) => {
+app.get('/api/users/auth', auth, async(req, res) => {
     //여기 까지 미들웨어를 통과해 왔다는 얘기는  Authentication 이 True 라는 말.
-    res.status(200).json({
-      _id: req.user._id,
-      isAdmin: req.user.role === 0 ? false : true,
-      isAuth: true,
-      email: req.user.email,
-      name: req.user.name,
-      role: req.user.role,
-      token: req.user.token,
-    })
+
+  const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:7545'));
+  const contract = new web3.eth.Contract(erc20Abi, contractAddress);
+  const tokenBalance = await contract.methods.balanceOf(req.user.address).call();
+  let ethBalance;
+
+  web3.eth.getBalance(req.user.address, "latest", function (err, result) { 
+      if (err) {
+        console.log(err);
+        return;
+      }
+      ethBalance = result;
+      res.status(200).json({
+        _id: req.user._id,
+        isAdmin: req.user.role === 0 ? false : true,
+        isAuth: true,
+        email: req.user.email,
+        name: req.user.name,
+        address: req.user.address,
+        role: req.user.role,
+        token: req.user.token,
+        tokenBalance: tokenBalance,
+        ethBalance : ethBalance,
+      })
+  });
+  
   })
   
   app.get('/api/users/logout', auth, (req, res) => {
